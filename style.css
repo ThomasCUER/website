@@ -1,3 +1,11 @@
+/* Taille fixe pour le graphique du simulateur */
+#graphCapital {
+    width: 1000px !important;
+    height: 500px !important;
+    max-width: 100%;
+    display: block;
+    margin: 2em auto 0 auto;
+}
 body {
     font-family: Arial, sans-serif;
     background: #f4f4f4;

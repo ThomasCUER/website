@@ -2,23 +2,33 @@ document.getElementById('formSimu').addEventListener('submit', function(e) {
     e.preventDefault();
     const capital = parseFloat(document.getElementById('capital').value);
     const taux = parseFloat(document.getElementById('taux').value) / 100;
+    const mensuel = parseFloat(document.getElementById('mensuel').value);
     const annees = parseInt(document.getElementById('annees').value);
     if (isNaN(capital) || isNaN(taux) || isNaN(annees)) {
         document.getElementById('resultat').textContent = 'Veuillez remplir tous les champs.';
         return;
     }
-    const montantFinal = capital * Math.pow(1 + taux, annees);
+    // Calcul avec versement mensuel
+    let montantFinal = capital;
+    for (let m = 1; m <= annees * 12; m++) {
+        montantFinal = montantFinal * Math.pow(1 + taux / 12, 1) + mensuel;
+    }
     document.getElementById('resultat').textContent = `Montant final après ${annees} ans : ${montantFinal.toFixed(2)} €`;
 
     // Calculer l'évolution du capital année par année
     const labels = [];
     const data = [];
-        const investi = [];
-        for (let i = 0; i <= annees; i++) {
-            labels.push(i.toString());
-            data.push((capital * Math.pow(1 + taux, i)).toFixed(2));
-            investi.push(capital.toFixed(2));
+    const investi = [];
+    for (let i = 0; i <= annees; i++) {
+        labels.push(i.toString());
+        // Calculer le capital à la fin de chaque année avec versement mensuel
+        let montant = capital;
+        for (let m = 1; m <= i * 12; m++) {
+            montant = montant * Math.pow(1 + taux / 12, 1) + mensuel;
         }
+        data.push(montant.toFixed(2));
+        investi.push((capital + mensuel * i * 12).toFixed(2));
+    }
 
     // Afficher le graphique avec Chart.js
     const ctx = document.getElementById('graphCapital').getContext('2d');
